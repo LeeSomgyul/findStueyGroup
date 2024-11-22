@@ -36,9 +36,5 @@ public class HomeController {
         return "login"; //login.html 페이지로 이동(로그인)
     }
 
-    @GetMapping("/join")
-    public String join(){
-        return "join"; //join.html 페이지로 이동(회원가입)
-    }
 
 }
