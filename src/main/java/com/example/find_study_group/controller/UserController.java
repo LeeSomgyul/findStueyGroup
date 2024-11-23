@@ -5,9 +5,7 @@ import com.example.find_study_group.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -17,6 +15,17 @@ public class UserController {
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
+    }
+
+    //이메일 중복 확인 API
+    @GetMapping("/check-email")
+    @ResponseBody
+    public String checkEmail(@RequestParam("email") String email){
+        boolean isDuplicate = userService.isEmailDuplicated(email);
+        if(isDuplicate){
+            return "{\"message\": \" 이미 존재하는 아이디입니다.\"}";
+        }
+        return "{\"message\": \" 사용 가능한 아이디입니다.\"}";
     }
 
     //회원가입 페이지 이동
