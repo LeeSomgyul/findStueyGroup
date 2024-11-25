@@ -3,9 +3,15 @@ package com.example.find_study_group.controller;
 import com.example.find_study_group.domain.User;
 import com.example.find_study_group.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -19,13 +25,29 @@ public class UserController {
 
     //이메일 중복 확인 API
     @GetMapping("/check-email")
-    @ResponseBody
-    public String checkEmail(@RequestParam("email") String email){
-        boolean isDuplicate = userService.isEmailDuplicated(email);
-        if(isDuplicate){
-            return "{\"message\": \" 이미 존재하는 아이디입니다.\"}";
+    public ResponseEntity<String> checkEmail(@RequestParam String email){
+        if(userService.isEmailDuplicated(email)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용 중인 이메일입니다.");
         }
-        return "{\"message\": \" 사용 가능한 아이디입니다.\"}";
+        return ResponseEntity.ok("사용 가능한 이메일입니다.");
+    }
+
+    //전화번호 중복 확인 API
+    @GetMapping("/check-phone")
+    public ResponseEntity<String> checkPhone(@RequestParam String phone){
+        if(userService.isPhoneDuplicate(phone)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용 중인 전화번호입니다.");
+        }
+        return ResponseEntity.ok("사용 가능한 전화번호입니다.");
+    }
+
+    //닉네임 중복 확인 API
+    @GetMapping("/check-nickname")
+    public ResponseEntity<String> checkNickname(@RequestParam String nickname){
+        if(userService.isNicknameDuplicate(nickname)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용 중인 닉네임입니다.");
+        }
+        return ResponseEntity.ok("사용 가능한 닉네임입니다.");
     }
 
     //회원가입 페이지 이동
@@ -37,8 +59,25 @@ public class UserController {
 
     //회원가입 처리
     @PostMapping("/join")
-    public String registerUser(@ModelAttribute User user){
-        userService.register(user);
-        return "redirect:/login";//가입 완료 후 로그인 페이지로 이동
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody User user){
+        try {
+            userService.register(user);
+            return ResponseEntity.ok(Collections.singletonMap("message", "가입이 완료되었습니다."));
+        } catch (IllegalArgumentException e) {
+            // 예외 메시지를 JSON 형식으로 클라이언트에 전달
+            Map<String, String> errorResponse = new HashMap<>();
+            if (e.getMessage().contains("이메일")) {
+                errorResponse.put("field", "email");
+                errorResponse.put("message", "이미 사용 중인 이메일입니다.");
+            } else if (e.getMessage().contains("전화번호")) {
+                errorResponse.put("field", "phone");
+                errorResponse.put("message", "이미 사용 중인 전화번호입니다.");
+            } else if (e.getMessage().contains("닉네임")) {
+                errorResponse.put("field", "nickname");
+                errorResponse.put("message", "이미 사용 중인 닉네임입니다.");
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
     }
 }

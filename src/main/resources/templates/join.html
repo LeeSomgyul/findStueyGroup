@@ -15,7 +15,7 @@
     </header>
     <h1>회원가입</h1>
     <!--회원가입 폼-->
-    <form id="registrationForm" action="/join" method="post">
+    <form id="registrationForm" action="/join" method="post" novalidate>
         <!--아이디(이메일)-->
         <div>
             <label for="email">아이디(이메일)</label>
@@ -38,7 +38,8 @@
         <!--휴대폰-->
         <div>
             <label for="phone">휴대폰</label>
-            <input type="tel" id="phone" name="phone" required>
+            <input type="tel" id="phone" name="phone" maxlength="11" required>
+            <button type="button" id="checkPhoneBtn">중복 확인</button>
             <span id="phoneError" class="error-message"></span>
         </div>
         <!--이름(실명)-->
@@ -57,6 +58,7 @@
         <div>
             <label for="nickname">닉네임(최대 5자)</label>
             <input type="text" id="nickname" name="nickname" maxlength="5" required>
+            <button type="button" id="checkNicknameBtn">중복 확인</button>
             <span id="nicknameError" class="error-message"></span>
         </div>
         <!--프로필 이미지-->
@@ -66,7 +68,7 @@
             <span id="profilePictureError" class="error-message"></span>
         </div>
         <!--가입하기 버튼-->
-        <button type="submit">가입하기</button>
+        <button type="submit" id="registerBtn">가입하기</button>
     </form>
 
     <script src="/js/join-validation.js"></script> <!-- JavaScript 파일 연결 -->

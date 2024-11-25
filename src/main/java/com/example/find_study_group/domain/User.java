@@ -30,7 +30,7 @@ public class User {
     @Column(name = "birth_date", nullable = false, length = 8)
     private String birthDate;
 
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 5, unique = true)
     private String nickname;
 
     @Column(name = "profile_picture")

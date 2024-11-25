@@ -14,7 +14,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/join", "/css/**", "/images/**", "/js/**", "/check-email").permitAll() // 인증 없이 접근 가능한 경로에 '/check-email' 추가
+                        .requestMatchers("/", "/join", "/css/**", "/images/**", "/js/**", "/check-email", "/check-phone", "/check-nickname").permitAll() // 인증 없이 접근 가능한 경로
                         .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
                 )
                 .formLogin((form) -> form
