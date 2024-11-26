@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 중복 확인 결과 저장용 객체
     let validationState = {
-        email: null,
-        phone: null,
-        nickname: null
+        email: false,
+        phone: false,
+        nickname: false
     };
 
     // 입력 값이 비어 있는지 확인하는 함수
@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (!isEmailValid(email)) {
             emailError.textContent = "이메일 형식으로 입력해주세요.";
+            validationState.email = false;
             return; // 이메일 형식이 잘못되었으면 중복 검사하지 않음
         } else {
             emailError.textContent = ""; // 올바른 형식이라면 오류 메시지를 제거
@@ -85,72 +86,83 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch(`/check-email?email=${encodeURIComponent(email)}`)
             .then(response => {
                 if (response.status === 409) {
-                    throw new Error("이미 사용 중인 이메일입니다.");
+                    validationState.email = false;
+                    emailError.textContent = "이미 사용 중인 이메일입니다.";
+                } else if (response.ok) {
+                    validationState.email = true;
+                    emailError.textContent = "사용 가능한 이메일입니다.";
+                } else {
+                    throw new Error("중복 검사 중 문제가 발생했습니다. 다시 시도해주세요.");
                 }
-                return response.text();
-            })
-            .then(message => {
-                emailError.textContent = message;
             })
             .catch(error => {
                 console.error("중복 검사 요청 중 오류 발생:", error);
                 emailError.textContent = error.message;
-            });
+                validationState.email = false;
+        });
     });
 
-    // 중복 확인 버튼 클릭 이벤트 (전화번호)
-    checkPhoneBtn.addEventListener("click", function() {
+    // 전화번호 중복 확인 버튼 클릭 이벤트
+    checkPhoneBtn.addEventListener("click", function () {
         const phone = phoneInput.value.trim();
 
         if (!isPhoneValid(phone)) {
             phoneError.textContent = "전화번호 형식이 잘못되었습니다. 숫자 11자리를 입력해주세요.";
-            return; // 전화번호 형식이 잘못되었으면 중복 검사하지 않음
+            validationState.phone = false;
+            return;
         } else {
-            phoneError.textContent = ""; // 올바른 형식이라면 오류 메시지를 제거
+            phoneError.textContent = "";
         }
 
         // Fetch API로 중복 확인 요청
         fetch(`/check-phone?phone=${encodeURIComponent(phone)}`)
             .then(response => {
                 if (response.status === 409) {
-                    throw new Error("이미 사용 중인 전화번호입니다.");
+                    validationState.phone = false;
+                    phoneError.textContent = "이미 사용 중인 전화번호입니다.";
+                } else if (response.ok) {
+                    validationState.phone = true;
+                    phoneError.textContent = "사용 가능한 전화번호입니다.";
+                } else {
+                    throw new Error("중복 검사 중 문제가 발생했습니다. 다시 시도해주세요.");
                 }
-                return response.text();
-            })
-            .then(message => {
-                phoneError.textContent = message;
             })
             .catch(error => {
                 console.error("중복 검사 요청 중 오류 발생:", error);
                 phoneError.textContent = error.message;
+                validationState.phone = false;
             });
     });
 
-    // 중복 확인 버튼 클릭 이벤트 (닉네임)
-    checkNicknameBtn.addEventListener("click", function() {
+    // 닉네임 중복 확인 버튼 클릭 이벤트
+    checkNicknameBtn.addEventListener("click", function () {
         const nickname = nicknameInput.value.trim();
 
         if (!isNicknameValid(nickname)) {
             nicknameError.textContent = "닉네임은 1자에서 5자 이내의 한글, 영문자, 숫자만 가능합니다.";
-            return; // 닉네임 형식이 잘못되었으면 중복 검사하지 않음
+            validationState.nickname = false;
+            return;
         } else {
-            nicknameError.textContent = ""; // 올바른 형식이라면 오류 메시지를 제거
+            nicknameError.textContent = "";
         }
 
         // Fetch API로 중복 확인 요청
         fetch(`/check-nickname?nickname=${encodeURIComponent(nickname)}`)
             .then(response => {
                 if (response.status === 409) {
-                    throw new Error("이미 사용 중인 닉네임입니다.");
+                    validationState.nickname = false;
+                    nicknameError.textContent = "이미 사용 중인 닉네임입니다.";
+                } else if (response.ok) {
+                    validationState.nickname = true;
+                    nicknameError.textContent = "사용 가능한 닉네임입니다.";
+                } else {
+                    throw new Error("중복 검사 중 문제가 발생했습니다. 다시 시도해주세요.");
                 }
-                return response.text();
-            })
-            .then(message => {
-                nicknameError.textContent = message;
             })
             .catch(error => {
                 console.error("중복 검사 요청 중 오류 발생:", error);
                 nicknameError.textContent = error.message;
+                validationState.nickname = false;
             });
     });
 
@@ -160,6 +172,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (!validateForm()) {
             return; // 유효성 검사를 통과하지 못한 경우 폼 제출 중지
+        }
+
+        // 중복 검사 여부 확인
+        if (!validationState.email) {
+            emailError.textContent = "이메일 중복 검사를 해주세요.";
+            emailInput.focus();
+            return;
+        }
+        if (!validationState.phone) {
+            phoneError.textContent = "전화번호 중복 검사를 해주세요.";
+            phoneInput.focus();
+            return;
+        }
+        if (!validationState.nickname) {
+            nicknameError.textContent = "닉네임 중복 검사를 해주세요.";
+            nicknameInput.focus();
+            return;
         }
 
         // 서버로 사용자 등록 요청 보내기
@@ -181,21 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
             body: JSON.stringify(userData)
         })
         .then(response => {
-            if (response.status === 409) {
-                return response.json().then(errorData => {
-                    if (errorData.field === "email") {
-                        emailError.textContent = errorData.message;
-                        emailInput.focus();
-                    } else if (errorData.field === "phone") {
-                        phoneError.textContent = errorData.message;
-                        phoneInput.focus();
-                    } else if (errorData.field === "nickname") {
-                        nicknameError.textContent = errorData.message;
-                        nicknameInput.focus();
-                    }
-                    throw new Error(errorData.message);
-                });
-            } else if (!response.ok) {
+            if (!response.ok) {
                 throw new Error("가입 중 문제가 발생했습니다. 다시 시도해주세요.");
             }
             return response.json();
@@ -203,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             if (data && data.message) {
                 alert(data.message); // 가입 성공 메시지
+                window.location.href = '/login'; // 가입 성공 시 로그인 페이지로 이동
             }
         })
         .catch(error => {
