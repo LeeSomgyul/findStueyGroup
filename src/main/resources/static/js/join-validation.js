@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        // 서버로 사용자 등록 요청 보내기
+        // 데이터를 담아서 서버로 사용자 등록 요청 보내기
         const userData = {
             email: emailInput.value.trim(),
             password: passwordInput.value.trim(),

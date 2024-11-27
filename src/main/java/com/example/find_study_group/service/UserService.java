@@ -3,21 +3,24 @@ package com.example.find_study_group.service;
 import com.example.find_study_group.domain.User;
 import com.example.find_study_group.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // [회원가입]
     //사용자 등록(회원가입) 메서드
     public User register(User user){
         if(isEmailDuplicated(user.getEmail()) || isPhoneDuplicate(user.getPhone()) || isNicknameDuplicate(user.getNickname())) {
@@ -40,5 +43,20 @@ public class UserService {
     //닉네임 중복 확인 메서드
     public boolean isNicknameDuplicate(String nickname){
         return userRepository.findByNickname(nickname) != null;
+    }
+
+    //[로그인]
+    //사용자를 이메일로 찾는 메서드
+    public Optional<User> findByEmail(String email){
+        return Optional.ofNullable(userRepository.findByEmail(email));
+    }
+
+    // 사용자가 입력한 아이디(이메일)과 비밀번호를 데이터베이스와 비교해보는 메서드
+    public boolean authenticateUser(String email, String rawPassword){
+        User user = userRepository.findByEmail(email);
+        if (user != null){
+            return passwordEncoder.matches(rawPassword, user.getPassword());//비밀번호 맞다면 true
+        }
+        return false;//비밀번호 틀리면 false
     }
 }

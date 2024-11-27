@@ -5,6 +5,21 @@
     <title>로그인 | 동네 공부친구 찾기</title>
 </head>
 <body>
-  <h1>로그인</h1>
+    <header>
+        <div class="navbar">
+            <a href="/">
+                <img src="/images/logo.svg" alt="동네 공부친구 찾기" style="height: 40px;">
+            </a>
+        </div>
+    </header>
+    <h1>로그인</h1>
+    <form id="loginForm" method="post" novalidate>
+        <input type="text" id="loginId" name="loginId" placeholder="아이디" required>
+        <input type="password" id="loginPassword" name="loginPassword" placeholder="비밀번호" required>
+        <div id="loginError" class="error-message"></div>
+        <button type="submit" id="loginBtn">로그인</button>
+    </form>
+
+    <script src="/js/login-validation.js"></script> <!-- JavaScript 파일 연결 -->
 </body>
 </html>

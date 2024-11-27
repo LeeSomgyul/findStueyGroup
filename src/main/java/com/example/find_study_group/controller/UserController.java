@@ -69,7 +69,7 @@ public class UserController {
             Map<String, String> errorResponse = new HashMap<>();
             if (e.getMessage().contains("이메일")) {
                 errorResponse.put("field", "email");
-                errorResponse.put("message", "이미 사용 중인 이메일입니다.");
+                errorResponse.put("message", "이미 사용 중인 이메일이다!.");
             } else if (e.getMessage().contains("전화번호")) {
                 errorResponse.put("field", "phone");
                 errorResponse.put("message", "이미 사용 중인 전화번호입니다.");
