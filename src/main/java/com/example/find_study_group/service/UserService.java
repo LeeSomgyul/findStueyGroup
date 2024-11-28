@@ -59,4 +59,11 @@ public class UserService {
         }
         return false;//비밀번호 틀리면 false
     }
+
+    //[아이디 찾기]
+    //이름, 전화번호로 아이디(이메일) 찾는 메서드
+    public String findUserId(String name, String phone){
+        User user = userRepository.findByNameAndPhone(name, phone);
+        return user != null ? user.getEmail() : null;
+    }
 }

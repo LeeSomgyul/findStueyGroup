@@ -27,6 +27,12 @@ public class LoginController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    //[로그인]
+    @GetMapping("/login")
+    public String login(){
+        return "login"; //login.html 페이지로 이동(로그인)
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody Map<String, String> loginRequest, HttpSession session) {
         String loginId = loginRequest.get("loginId");
@@ -45,6 +51,7 @@ public class LoginController {
         }
     }
 
+    //[로그아웃]
     @GetMapping("/logout")
     public String logout(HttpSession session){
         System.out.println("로그아웃 요청 처리됨");

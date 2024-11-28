@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기 | 동네 공부친구 찾기</title>
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/">
+        <img src="/images/logo.svg" alt="동네 공부친구 찾기" style="height: 40px;">
+      </a>
+    </div>
+  </header>
+  <h1>아이디 찾기</h1>
+  <form id="findIdForm" novalidate>
+    <div>
+      <label for="name">이름</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+      <label for="phone">전화번호</label>
+      <input type="text" id="phone" name="phone" required>
+    </div>
+    <button type="submit" id="findIdBtn">아이디 찾기</button>
+  </form>
+  <div id="findIdResult"></div>
+
+  <script src="/js/findId.js"></script> <!-- JavaScript 파일 연결 -->
+</body>
+</html>

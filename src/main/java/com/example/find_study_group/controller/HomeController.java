@@ -40,10 +40,7 @@ public class HomeController {
         return "event"; //event.html 페이지로 이동(이벤트)
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "login"; //login.html 페이지로 이동(로그인)
-    }
+
 
 
 }

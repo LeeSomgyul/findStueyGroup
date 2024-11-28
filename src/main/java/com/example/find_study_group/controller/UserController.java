@@ -69,7 +69,7 @@ public class UserController {
             Map<String, String> errorResponse = new HashMap<>();
             if (e.getMessage().contains("이메일")) {
                 errorResponse.put("field", "email");
-                errorResponse.put("message", "이미 사용 중인 이메일이다!.");
+                errorResponse.put("message", "이미 사용 중인 이메일입니다.");
             } else if (e.getMessage().contains("전화번호")) {
                 errorResponse.put("field", "phone");
                 errorResponse.put("message", "이미 사용 중인 전화번호입니다.");
@@ -78,6 +78,31 @@ public class UserController {
                 errorResponse.put("message", "이미 사용 중인 닉네임입니다.");
             }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/find-id")
+    public String showFindIdPage(){
+        return "findId";
+    }
+
+    @PostMapping("/find-id")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> findId(@RequestBody Map<String, String> request){
+        String name = request.get("name");
+        String phone = request.get("phone");
+
+        String email = userService.findUserId(name, phone);
+
+        if(email != null){
+            Map<String, String> response = new HashMap<>();
+            response.put("email", email);
+            return ResponseEntity.ok(response);
+        }else{
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "USER_NOT_FOUND");
+            errorResponse.put("message", "입력하신 이름과 전화번호로 등록된 이메일을 찾을 수 없습니다. 입력 정보를 다시 확인해 주세요.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 }
