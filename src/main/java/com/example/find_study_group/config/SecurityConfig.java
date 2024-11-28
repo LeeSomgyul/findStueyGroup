@@ -16,8 +16,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/join", "/login", "/css/**", "/images/**", "/js/**", "/check-email", "/check-phone", "/check-nickname").permitAll()
+                        .requestMatchers("/", "/join", "/login", "/logout", "/css/**", "/images/**", "/js/**", "/check-email", "/check-phone", "/check-nickname").permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout((logout) -> logout
+                        .disable() // Spring Security 로그아웃 비활성화
                 )
                 .csrf(csrf -> csrf.disable()); // CSRF 비활성화 (개발 환경에서만)
 

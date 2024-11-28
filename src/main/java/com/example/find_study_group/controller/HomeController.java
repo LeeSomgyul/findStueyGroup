@@ -1,14 +1,23 @@
 package com.example.find_study_group.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
     @GetMapping("/")
-    public String home(){
-        return "home"; //home.html 페이지로 이동(홈)
+    public String home(HttpSession session, Model model){
+        Object loggedInUser = session.getAttribute("user");//세션에서 로그인한 사용자 정보 가져오기
+        if(loggedInUser != null){
+            model.addAttribute("isLoggedIn", true);
+            return "home";
+        }else{
+            model.addAttribute("isLoggedIn", false);
+            return "home";
+        }
     }
 
     @GetMapping("/find-study")
