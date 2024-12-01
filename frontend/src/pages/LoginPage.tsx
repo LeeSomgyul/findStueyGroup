@@ -1,6 +1,6 @@
 import React from "react";
 import LoginForm from "../components/LoginForm";
-import logo from "../../assets/logo.svg";
+import logo from "../assets/logo.svg";
 
 const LoginPage: React.FC = () => {
   return (

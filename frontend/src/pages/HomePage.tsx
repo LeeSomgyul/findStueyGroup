@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.svg";
+import logo from "../assets/logo.svg";
 
 const HomePage: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // 로그인 여부 상태
